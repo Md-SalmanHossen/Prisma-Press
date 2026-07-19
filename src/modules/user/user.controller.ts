@@ -1,8 +1,11 @@
-import {type NextFunction, type Request,type RequestHandler,type Response} from "express";
+import {request, type NextFunction, type Request,type RequestHandler,type Response} from "express";
 import httpStatus from 'http-status';
 import { userService } from "./user.service";
 import { catchAsync } from "../../utils/catchAsync.utils";
 import { sendResponse } from "../../utils/sendResponse.utils";
+import jwt from 'jsonwebtoken';
+import config from "../../config";
+import { jwtUtils } from "../../utils/jwt.utils";
 
 
 const createUser=catchAsync(async(req:Request,res:Response,next:NextFunction)=>{
@@ -18,6 +21,30 @@ const createUser=catchAsync(async(req:Request,res:Response,next:NextFunction)=>{
    })
 });
 
+const getProfile=catchAsync(async(req:Request,res:Response,next:NextFunction)=>{
+
+   const {accessToken}=req.cookies;
+   console.log("access token",accessToken)
+
+   const verifyToken=jwtUtils.verifyToken(accessToken,config.jwt_access_secret);
+   console.log("verify token",verifyToken);
+
+   if(typeof verifyToken==="string"){
+      throw new Error(verifyToken);
+   }
+
+   const profile=await userService.getMyProfileFromDB(verifyToken.id)
+
+   sendResponse(res,{
+      success:true,
+      statusCode:httpStatus.OK,
+      message:"User profile retrieved successfully",
+      data:{profile}
+   });
+   
+});
+
 export const userController={
    createUser,
+   getProfile
 }
