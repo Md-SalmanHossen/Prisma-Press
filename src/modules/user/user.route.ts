@@ -9,8 +9,9 @@ const router = Router();
 
 router.post("/register",userController.createUser);
 
-router.get("/me",auth(Role.ADMIN,Role.USER,Role.AUTHOR),userController.getProfile)
+router.get("/me",auth(Role.ADMIN,Role.USER,Role.AUTHOR),userController.getProfile);
 
-router.put("/me-profile",auth(Role.ADMIN,Role.USER,Role.AUTHOR),userController.updateMyProfile)
-export default router;
+router.put("/my-profile",auth(Role.ADMIN,Role.USER,Role.AUTHOR),userController.updateMyProfile);
+
+export default router; 
 
