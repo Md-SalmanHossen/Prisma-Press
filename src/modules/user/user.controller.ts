@@ -23,17 +23,18 @@ const createUser=catchAsync(async(req:Request,res:Response,next:NextFunction)=>{
 
 const getProfile=catchAsync(async(req:Request,res:Response,next:NextFunction)=>{
 
-   const {accessToken}=req.cookies;
-   console.log("access token",accessToken)
+   //const {accessToken}=req.cookies;
+   //console.log("access token",accessToken);
+   //console.log("User request :",req.user);
 
-   const verifyToken=jwtUtils.verifyToken(accessToken,config.jwt_access_secret);
-   console.log("verify token",verifyToken);
+   // const verifyToken=jwtUtils.verifyToken(accessToken,config.jwt_access_secret);
+   // console.log("verify token",verifyToken);
 
-   if(typeof verifyToken==="string"){
-      throw new Error(verifyToken);
-   }
+   // if(typeof verifyToken==="string"){
+   //    throw new Error(verifyToken);
+   // }
 
-   const profile=await userService.getMyProfileFromDB(verifyToken.id)
+   const profile=await userService.getMyProfileFromDB(req.user?.id as string)
 
    sendResponse(res,{
       success:true,
@@ -44,7 +45,12 @@ const getProfile=catchAsync(async(req:Request,res:Response,next:NextFunction)=>{
    
 });
 
+const updateMyProfile=catchAsync(async(req:Request,res:Response,next:NextFunction)=>{
+
+});
+
 export const userController={
    createUser,
-   getProfile
+   getProfile,
+   updateMyProfile
 }
