@@ -20,7 +20,6 @@ const createPost=catchAsync(async(req:Request,res:Response,next:NextFunction)=>{
    });
 });
 
-
 const getAllPost=catchAsync(async(req:Request,res:Response,next:NextFunction)=>{
    const allPost=await postService.getAllPostInDB();
 
@@ -35,18 +34,47 @@ const getAllPost=catchAsync(async(req:Request,res:Response,next:NextFunction)=>{
 
 });
 
-const getPost=catchAsync(async(req:Request,res:Response,next:NextFunction)=>{
-
-});
-const getMyPost=catchAsync(async(req:Request,res:Response,next:NextFunction)=>{
-
-});
 const getPostById=catchAsync(async(req:Request,res:Response,next:NextFunction)=>{
+   const postId=req.params.postId;
+   if(!postId){
+      throw new Error("Post id required in params");
+   }
+
+   const result = await postService.postByIdInDB(postId as string);
+
+   sendResponse(res,{
+      success:true,
+      statusCode:httpStatus.OK,
+      message:"Post retrieved successfully",
+      data:{
+         result
+      }
+   });
+});
+
+const getMyPost=catchAsync(async(req:Request,res:Response,next:NextFunction)=>{
+    const authorId=req.user?.id;
+    const result = await postService.getMyPostInDB(authorId as string);
+    sendResponse(res,{
+      success:true,
+      statusCode:httpStatus.OK,
+      message:"My Post retrieved successfully",
+      data:{
+         result
+      }
+   });
+});
+
+const getPost=catchAsync(async(req:Request,res:Response,next:NextFunction)=>{
+   
 
 });
+
+
 const updatePost=catchAsync(async(req:Request,res:Response,next:NextFunction)=>{
 
 });
+
 const deletePost=catchAsync(async(req:Request,res:Response,next:NextFunction)=>{
 
 });
